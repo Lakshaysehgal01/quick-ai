@@ -40,7 +40,7 @@ const WriteArticle = () => {
               className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
                 selectedLength.length === item.length
                   ? "bg-blue-50 text-blue-700"
-                  : "bg-gray-200 text-gray-700"
+                  : "border-gray-300 text-gray-500"
               } transition-all duration-100`}
               onClick={() => setSelectedLength(item)}
             >
@@ -53,7 +53,7 @@ const WriteArticle = () => {
           type="submit"
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#226bff] to-[#65adff] text-white py-2 px-4 mt-6 text-sm rounded-lg cursor-pointer"
         >
-          <Edit />
+          <Edit  className="w-5"/>
           Generate Article
         </button>
       </form>
