@@ -132,7 +132,7 @@ export const dummyPublishedCreationData = [
         "id": 1,
         "user_id": "user_2yMX02PRbyMtQK6PebpjnxvRNIA",
         "prompt": "Generate an image of A Boy is on Boat , and fishing in the style Anime style.",
-        "content": ai_gen_img_1,
+        "content": ai_gen_img_1 as string,
         "type": "image",
         "publish": true,
         "likes": [
@@ -168,6 +168,5 @@ export const dummyPublishedCreationData = [
         ],
         "created_at": "2025-06-23T11:29:23.351Z",
         "updated_at": "2025-06-23T11:29:44.434Z",
-        "__v": 1
     },
 ]
