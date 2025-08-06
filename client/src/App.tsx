@@ -9,8 +9,14 @@ import ReviewResume from "./pages/ReviewResume";
 import RemoveBackground from "./pages/RemoveBackground";
 import RemoveObject from "./pages/RemoveObject";
 import Community from "./pages/Community";
+import { useAuth } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 function App() {
+  const { getToken } = useAuth();
+  useEffect(() => {
+    getToken().then((token) => console.log(token));
+  }, []);
   return (
     <div>
       <Routes>
@@ -23,7 +29,7 @@ function App() {
           <Route path="review-resume" element={<ReviewResume />} />
           <Route path="remove-background" element={<RemoveBackground />} />
           <Route path="remove-object" element={<RemoveObject />} />
-           <Route path="community" element={<Community/>} />
+          <Route path="community" element={<Community />} />
         </Route>
       </Routes>
     </div>

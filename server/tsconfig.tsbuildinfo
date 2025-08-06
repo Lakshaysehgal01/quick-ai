@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/controller/ai.controller.ts","./src/middleware/auth.ts","./src/routes/ai.routes.ts","./src/types/clerk.d.ts","./src/types/env.d.ts"],"version":"5.9.2"}
+{"root":["./src/index.ts","./src/controller/ai.controller.ts","./src/middleware/auth.ts","./src/routes/ai.routes.ts","./src/lib/cloudinary.ts","./src/types/clerk.d.ts","./src/types/env.d.ts"],"version":"5.9.2"}
