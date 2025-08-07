@@ -198,3 +198,49 @@ export const generateImage = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const removeBackground = async (req: Request, res: Response) => {
+  try {
+    const auth = getAuth(req);
+    const userId = auth.userId;
+    if (!userId) {
+      res.status(401).json({
+        message: "Unauthorized User",
+      });
+      return;
+    }
+    const { image } = req.body;
+    const plan = req.plan;
+    if (plan != "premium") {
+      res.status(403).json({
+        message: "This feature is only available for premium subscriptions",
+      });
+      return;
+    }
+
+    const uploadedResponse = await cloudinary.uploader.upload(image, {
+      folder: "bg_removal",
+      transformation: [
+        {
+          effect: "background_removal",
+          background_removal: "remove_the_background",
+        },
+      ],
+    });
+    const image_url = uploadedResponse.secure_url;
+    await client.creation.create({
+      data: {
+        userId: userId,
+        prompt: "Remove background from image",
+        content: image_url,
+        type: "image",
+      },
+    });
+    res.status(201).json({ message: image_url });
+  } catch (error) {
+    console.log("Error in generate-image", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
