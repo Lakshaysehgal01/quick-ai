@@ -6,13 +6,11 @@ import axios from "axios";
 import cloudinary from "../lib/cloudinary.js";
 import fs from "fs";
 import pdf from "pdf-parse";
-
+import client from "../lib/db.js";
 const openai = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
-
-const client = new PrismaClient({});
 
 export const generateArticle = async (req: Request, res: Response) => {
   try {
