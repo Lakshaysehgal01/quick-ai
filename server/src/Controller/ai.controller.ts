@@ -184,13 +184,13 @@ export const generateImage = async (req: Request, res: Response) => {
     await client.creation.create({
       data: {
         userId: userId,
-        prompt: prompt,
+        prompt: formattedPrompt,
         content: image_url,
         type: "image",
         publish: publish ?? false,
       },
     });
-    res.status(201).json({ message: image_url });
+    res.status(201).json(image_url);
   } catch (error) {
     console.log("Error in generate-image", error);
     res.status(500).json({

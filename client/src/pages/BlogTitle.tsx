@@ -44,7 +44,8 @@ const BlogTitle = () => {
       setContent(res.data);
     } catch (error) {
       console.log(error);
-      toast.error(error as string);
+      //@ts-ignore
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }

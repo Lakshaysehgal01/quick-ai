@@ -32,7 +32,8 @@ const WriteArticle = () => {
       );
       setContent(res.data);
     } catch (error) {
-      toast.error(error as string);
+      //@ts-ignore
+      toast.error(error.response.data.message);
       console.log(error);
     } finally {
       setLoading(false);
