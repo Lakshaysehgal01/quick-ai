@@ -4,8 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import OpenAI from "openai";
 import axios from "axios";
 import cloudinary from "../lib/cloudinary.js";
-// import fs from "fs";
-// import pdf from "pdf-parse";
+import fs from "fs";
+import { pdfToText } from "pdf-ts";
 import client from "../lib/db.js";
 const openai = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -306,65 +306,65 @@ export const removeImageObject = async (req: Request, res: Response) => {
   }
 };
 
-// export const reviewResume = async (req: Request, res: Response) => {
-//   try {
-//     const auth = getAuth(req);
-//     const userId = auth.userId;
-//     if (!userId) {
-//       res.status(401).json({
-//         message: "Unauthorized User",
-//       });
-//       return;
-//     }
-//     const resume = req.file;
-//     if (!resume) {
-//       res.status(400).json({
-//         message: "Resume not provided",
-//       });
-//       return;
-//     }
-//     const plan = req.plan;
-//     if (plan != "premium") {
-//       res.status(403).json({
-//         message: "This feature is only available for premium subscriptions",
-//       });
-//       return;
-//     }
-//     if (resume.size > 5 * 1024 * 1024) {
-//       return res.status(413).json({
-//         message: "Resume file size exceeds the allowed size (5mb)",
-//       });
-//     }
-//     const dataBuffer = fs.readFileSync(resume.path);
-//     const pdfData = await pdf(dataBuffer);
+export const reviewResume = async (req: Request, res: Response) => {
+  try {
+    const auth = getAuth(req);
+    const userId = auth.userId;
+    if (!userId) {
+      res.status(401).json({
+        message: "Unauthorized User",
+      });
+      return;
+    }
+    const resume = req.file;
+    if (!resume) {
+      res.status(400).json({
+        message: "Resume not provided",
+      });
+      return;
+    }
+    const plan = req.plan;
+    if (plan != "premium") {
+      res.status(403).json({
+        message: "This feature is only available for premium subscriptions",
+      });
+      return;
+    }
+    if (resume.size > 5 * 1024 * 1024) {
+      return res.status(413).json({
+        message: "Resume file size exceeds the allowed size (5mb)",
+      });
+    }
+    const dataBuffer = fs.readFileSync(resume.path);
+    const pdfText = await pdfToText(dataBuffer);
 
-//     const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`;
-//     const response = await openai.chat.completions.create({
-//       model: "gemini-2.0-flash",
-//       messages: [
-//         {
-//           role: "user",
-//           content: prompt,
-//         },
-//       ],
-//       temperature: 0.7,
-//       max_tokens: 1000,
-//     });
-//     const content =
-//       response.choices[0]?.message.content ?? "No feedback generated. ";
-//     await client.creation.create({
-//       data: {
-//         userId: userId,
-//         prompt: `Review the uploaded Resume`,
-//         content: content as string,
-//         type: "Resume-Review",
-//       },
-//     });
-//     res.status(201).json({ message: content as string });
-//   } catch (error) {
-//     console.log("Error in resume-review controller", error);
-//     res.status(500).json({
-//       message: "Internal server error",
-//     });
-//   }
-// };
+    const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfText}`;
+    const response = await openai.chat.completions.create({
+      model: "gemini-2.0-flash",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
+    });
+    const content =
+      response.choices[0]?.message.content ?? "No feedback generated. ";
+    await client.creation.create({
+      data: {
+        userId: userId,
+        prompt: `Review the uploaded Resume`,
+        content: content as string,
+        type: "Resume-Review",
+      },
+    });
+    res.status(201).json({ message: content as string });
+  } catch (error) {
+    console.log("Error in resume-review controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
