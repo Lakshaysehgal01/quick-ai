@@ -212,7 +212,7 @@ export const removeBackground = async (req: Request, res: Response) => {
     const image = req.file;
     if (!image) {
       res.status(400).json({
-        message: "Image not provided in rmove background",
+        message: "Image not provided in remove background",
       });
       return;
     }
@@ -242,7 +242,7 @@ export const removeBackground = async (req: Request, res: Response) => {
         type: "image",
       },
     });
-    res.status(201).json({ message: image_url });
+    res.status(201).json(image_url);
   } catch (error) {
     console.log("Error in remove-background", error);
     res.status(500).json({
@@ -297,7 +297,7 @@ export const removeImageObject = async (req: Request, res: Response) => {
         type: "image",
       },
     });
-    res.status(201).json({ message: image_url });
+    res.status(201).json(image_url);
   } catch (error) {
     console.log("Error in remove-object ", error);
     res.status(500).json({

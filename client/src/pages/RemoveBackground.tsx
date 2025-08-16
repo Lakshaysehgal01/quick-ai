@@ -1,10 +1,42 @@
 import { Eraser, Sparkles } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
+import { axiosInstance } from "../lib/axios";
+import { useAuth } from "@clerk/clerk-react";
 
 const RemoveBackground = () => {
   const [inputValue, setInputValue] = useState<File | null>(null);
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [content, setContent] = useState<string>("");
+  const { getToken } = useAuth();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      setLoading(true);
+      if (!inputValue) {
+        toast.error("Please upload a image");
+        return;
+      }
+      const formData = new FormData();
+
+      formData.append("image", inputValue);
+      const res = await axiosInstance.post(
+        "/ai/remove-image-background",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        }
+      );
+      setContent(res.data);
+    } catch (error) {
+      console.log(error);
+      //@ts-ignore
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -34,10 +66,15 @@ const RemoveBackground = () => {
           Supports JPG, PNG, and other image formats
         </p>
         <button
+          disabled={loading}
           type="submit"
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#f6ab41] to-[#ff4938] text-white py-2 px-4 mt-6 text-sm rounded-lg cursor-pointer"
         >
-          <Eraser className="w-5" />
+          {loading ? (
+            <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
+          ) : (
+            <Eraser className="w-5" />
+          )}
           Remove Background
         </button>
       </form>
@@ -48,12 +85,20 @@ const RemoveBackground = () => {
           <Eraser className="w-5 h-5 text-[#f6ab41]" />
           <h1 className="text-xl font-semibold">Processed Image</h1>
         </div>
-        <div className="flex-1 flex justify-center items-center">
-          <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-            <Eraser className="w-9 h-9 " />
-            <p>Upload an image and click "Remove Background" to get started</p>
+        {!content ? (
+          <div className="flex-1 flex justify-center items-center">
+            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+              <Eraser className="w-9 h-9 " />
+              <p>
+                Upload an image and click "Remove Background" to get started
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mt-3 h-full">
+            <img src={content} alt="ai-image" className="w-full h-full" />
+          </div>
+        )}
       </div>
     </div>
   );
