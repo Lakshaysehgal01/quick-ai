@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { axiosInstance } from "../lib/axios";
 import Markdown from "react-markdown";
+import type { AxiosError } from "axios";
 
 const BlogTitle = () => {
   const blogCategories = [
@@ -42,10 +43,9 @@ const BlogTitle = () => {
         }
       );
       setContent(res.data);
-    } catch (error) {
-      console.log(error);
-      //@ts-ignore
-      toast.error(error.response.data.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

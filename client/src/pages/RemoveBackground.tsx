@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { axiosInstance } from "../lib/axios";
 import { useAuth } from "@clerk/clerk-react";
+import type { AxiosError } from "axios";
 
 const RemoveBackground = () => {
   const [inputValue, setInputValue] = useState<File | null>(null);
@@ -30,10 +31,9 @@ const RemoveBackground = () => {
         }
       );
       setContent(res.data);
-    } catch (error) {
-      console.log(error);
-      //@ts-ignore
-      toast.error(error.response.data.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

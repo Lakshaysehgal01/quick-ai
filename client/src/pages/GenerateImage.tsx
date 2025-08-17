@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@clerk/clerk-react";
 import { axiosInstance } from "../lib/axios";
+import type { AxiosError } from "axios";
 const GenerateImage = () => {
   const imageStyle = [
     "Realistic",
     "Cartoon",
     "Ghibli ",
     "Anime ",
-    "Cartoon ",
+    "scary ",
     "Fantasy ",
     "3D",
     "Potrait",
@@ -38,11 +39,9 @@ const GenerateImage = () => {
         }
       );
       setContent(res.data);
-    } catch (error) {
-      console.log("Error in generate image");
-      console.log(error);
-      //@ts-ignore
-      toast.error(error.response.data.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

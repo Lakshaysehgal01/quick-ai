@@ -83,7 +83,7 @@ export const toggleLikeCreation = async (req: Request, res: Response) => {
       where: { id: id },
       data: { likedBy: updatedLikes },
     });
-    res.status(201).json(updatedCreation);
+    res.status(201).json(message);
   } catch (error) {
     console.log("Error in like creation" + error);
     res.status(500).json({ message: "Internal server error" });

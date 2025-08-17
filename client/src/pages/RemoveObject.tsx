@@ -3,6 +3,7 @@ import { Scissors, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { axiosInstance } from "../lib/axios";
+import type { AxiosError } from "axios";
 
 const RemoveObject = () => {
   const [inputValue, setInputValue] = useState<File | null>(null);
@@ -35,10 +36,9 @@ const RemoveObject = () => {
         }
       );
       setContent(res.data);
-    } catch (error) {
-      console.log(error);
-      //@ts-ignore
-      toast.error(error.response.data.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

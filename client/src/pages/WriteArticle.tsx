@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "sonner";
 import Markdown from "react-markdown";
+import type { AxiosError } from "axios";
 
 const WriteArticle = () => {
   const articleLengthOptions = [
@@ -31,10 +32,9 @@ const WriteArticle = () => {
         { headers: { Authorization: `Bearer ${await getToken()}` } }
       );
       setContent(res.data);
-    } catch (error) {
-      //@ts-ignore
-      toast.error(error.response.data.message);
-      console.log(error);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

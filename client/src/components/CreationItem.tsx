@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Markdown from "react-markdown";
 const CreationItem = ({ item }: { item: Creation }) => {
   const [expand, setExpand] = useState<boolean>(false);
@@ -11,7 +11,7 @@ const CreationItem = ({ item }: { item: Creation }) => {
         <div>
           <h2>{item.prompt}</h2>
           <p className="text-gray-500">
-            {item.type} - {new Date(item.created_at).toLocaleString()}
+            {item.type} - {new Date(item.createdAt).toLocaleString()}
           </p>
         </div>
         <button className="bg-[#eff6ff] border border-[#bfdbfe] text-[#1e40af] px-4 py-1 rounded-full">

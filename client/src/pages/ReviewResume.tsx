@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { axiosInstance } from "../lib/axios";
 import Markdown from "react-markdown";
+import type { AxiosError } from "axios";
 
 const ReviewResume = () => {
   const [inputValue, setInputValue] = useState<File | null>(null);
@@ -26,10 +27,9 @@ const ReviewResume = () => {
         },
       });
       setContent(res.data.message);
-    } catch (error) {
-      console.log(error);
-      //@ts-ignore
-      toast.error(error.response.data.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
